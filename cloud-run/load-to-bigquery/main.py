@@ -1,29 +1,31 @@
-from google.cloud import bigquery
+import logging
+
 from flask import Flask
-from flask import request
-import os ,json,logging
+from google.cloud import bigquery
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 client = bigquery.Client()
 
 @app.route('/')
-
 def main():
-    table_id = "{your-project-id}.udemy_course.us_states"
-    job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-        source_format=bigquery.SourceFormat.CSV,
-        skip_leading_rows=1,
-    )
-    uri = "gs://{your-bucket-name}/us-states/us-states.csv"
-    load_job = client.load_table_from_uri(
-        uri, table_id, job_config=job_config
-    ) 
+    try:
+        table_id = "ferrous-depth-436501-q2.udemy_course.us_states"
+        job_config = bigquery.LoadJobConfig(
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            source_format=bigquery.SourceFormat.CSV,
+            skip_leading_rows=1,
+        )
+        uri = "gs://ferrous-depth-436501-q2-test-bucket/us-states/us-states.csv"
+        load_job = client.load_table_from_uri(
+            uri, table_id, job_config=job_config
+        )
 
-    load_job.result()  
+        load_job.result()  # Wait for job to complete.
 
-    destination_table = client.get_table(table_id)
-    return {"data": destination_table.num_rows}
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5052)))
+        destination_table = client.get_table(table_id)
+        return {"data": destination_table.num_rows}
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        return {"error": str(e)}, 500
