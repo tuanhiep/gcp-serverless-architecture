@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-ENV PORT 8081/
+ENV PORT 8081
 EXPOSE $PORT
 WORKDIR /app
 COPY . .

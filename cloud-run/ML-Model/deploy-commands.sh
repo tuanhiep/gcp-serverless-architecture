@@ -5,6 +5,10 @@ docker build -t ml-model .
 
 # Step-2 - Test & run the image locally 
 docker run -v "$(pwd)/:/app" ml-model
+# or to bind the port explicitly
+docker run -v "$(pwd)/:/app" -p 8081:8081 ml-model
+# or to add the environment variable for the service account
+docker run -v "$(pwd)/:/app" -p 8081:8081 -e GOOGLE_APPLICATION_CREDENTIALS="./secrets/ferrous-depth-436501-q2-e52c5f556e64.json" ml-model
 
 # Step-3 - List the images locally 
 docker image ls

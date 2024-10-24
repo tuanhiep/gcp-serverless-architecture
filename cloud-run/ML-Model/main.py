@@ -29,8 +29,8 @@ def main():
     #     outfile.write(accuracy_metrics)
 
     fs = gcsfs.GCSFileSystem()
-    with fs.open('gs://{bucket-name}/classification_report.json', 'wb') as outfile:        
-        outfile.write(accuracy_metrics)
-
+    with fs.open('gs://ferrous-depth-436501-q2-test-bucket/classification_report.json', 'wb') as outfile:
+        outfile.write(accuracy_metrics.encode('utf-8'))
+    return accuracy_metrics
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081)
